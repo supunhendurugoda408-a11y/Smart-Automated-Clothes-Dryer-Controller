@@ -1,0 +1,14 @@
+
+This project implements an Arduino-based Smart Automated Clothes Dryer Controller engineered for precision temperature and humidity regulation during fabric drying cycles.
+
+Multi-Zone Sensing: 
+Uses dual DHT22 sensors and dual DS18B20 waterproof probes to monitor average chamber temperature and relative humidity.
+
+Adjustable Thermal Profiles: 
+Features a selector knob (potentiometer) allowing users to choose drying temperatures ($30^\circ\text{C}$ to $70^\circ\text{C}$) based on fabric type (delicates, cottons, heavy fabrics).
+
+Closed-Loop Actuation:
+Heater & Air Blower (Pins 11 & 12): 
+Engages targeted heat and hot air circulation when chamber temperature is below target.
+Exhaust Fan (Pin 10): 
+Evacuates excess moisture and heat once the target threshold is reached to accelerate drying efficiency and prevent thermal damage to clothes.
