@@ -1,0 +1,263 @@
+#include <DHT.h>;
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+
+#define DHTPIN 6
+#define DHTPIN2 5
+#define DHTTYPE DHT22
+
+#define ONE_WIRE_BUS 8
+#define ONE_WIRE_BUS2 7
+
+
+
+int exsourceFan = 10;
+int heater = 12;
+int heaterFan = 11;
+
+DHT dht(DHTPIN, DHTTYPE);
+DHT dht2(DHTPIN2, DHTTYPE);
+
+OneWire oneWire(ONE_WIRE_BUS);
+OneWire oneWire2(ONE_WIRE_BUS2);
+
+DallasTemperature sensors(&oneWire);
+DallasTemperature sensors2(&oneWire2);
+
+//Variables
+
+float hum;
+float temp;
+float hum2;
+float temp2;
+float temp3;
+float temp4;
+
+float humAvg;
+float temAvg;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup()
+{
+  Serial.begin(9600);
+
+  pinMode(exsourceFan, OUTPUT);
+  pinMode(heater, OUTPUT);
+  pinMode(heaterFan, OUTPUT);
+
+  pinMode(A0, INPUT);
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+
+  dht.begin();
+  dht2.begin();
+
+  sensors.begin();
+  sensors2.begin();
+
+}
+
+void loop()
+{
+  int heaterTemp = 0;
+  int val = analogRead(A0);
+  float sum = val / 10;
+
+  sensors.requestTemperatures();
+  sensors2.requestTemperatures();
+
+  temp3 = sensors.getTempCByIndex(0);
+  temp4 = sensors2.getTempCByIndex(0);
+
+  hum = dht.readHumidity();
+  hum2 = dht2.readHumidity();
+
+  temp = dht.readTemperature();
+  temp2 = dht2.readTemperature();
+
+  humAvg = (hum + hum2) / 2;
+  temAvg = (temp + temp2 +  temp3 + temp4) / 4;
+
+  /*
+    Serial.print("Humidity: ");
+    Serial.print(humAvg);
+    Serial.print(" %, Temp: ");
+    Serial.print(temAvg);
+    Serial.println(" Celsius");
+    delay(10);
+  */
+
+
+  lcd.setCursor(0, 1);
+  lcd.print("TEM= ");
+  lcd.setCursor(4, 1);
+  lcd.print(temAvg);
+
+  lcd.setCursor(10, 1);
+  lcd.print("HUM=");
+  lcd.setCursor(14, 1);
+  lcd.print(humAvg);
+
+
+  if (sum <= 20 && sum >= 0) {
+
+    heaterTemp = 30;
+
+    lcd.setCursor(0, 0);
+    lcd.print("SET TEM =");
+    lcd.setCursor(10, 0);
+    lcd.print(30);
+
+
+    if (heaterTemp == 30 && temAvg <= 30) {
+
+      digitalWrite(heater, HIGH);
+      digitalWrite(heaterFan, HIGH);
+      digitalWrite(exsourceFan, LOW);
+
+    } else {
+      digitalWrite(heater, LOW);
+      digitalWrite(heaterFan, LOW);
+      digitalWrite(exsourceFan, HIGH);
+
+    }
+
+  } else if (sum <= 40 && sum >= 21) {
+    heaterTemp = 40;
+
+    lcd.clear();
+
+    lcd.setCursor(0, 1);
+    lcd.print("TEM= ");
+    lcd.setCursor(4, 1);
+    lcd.print(temAvg);
+
+    lcd.setCursor(10, 1);
+    lcd.print("HUM=");
+    lcd.setCursor(14, 1);
+    lcd.print(humAvg);
+
+    lcd.setCursor(0, 0);
+    lcd.print("SET TEM =");
+    lcd.setCursor(10, 0);
+    lcd.print(40);
+
+    if (heaterTemp == 40 && temAvg <= 40) {
+      digitalWrite(heater, HIGH);
+      digitalWrite(heaterFan, HIGH);
+      digitalWrite(exsourceFan, LOW);
+
+    } else {
+      digitalWrite(heater, LOW);
+      digitalWrite(heaterFan, LOW);
+      digitalWrite(exsourceFan, HIGH);
+
+    }
+  } else if (sum <= 60 && sum >= 41) {
+    heaterTemp = 50;
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("TEM= ");
+    lcd.setCursor(4, 1);
+    lcd.print(temAvg);
+
+    lcd.setCursor(10, 1);
+    lcd.print("HUM=");
+    lcd.setCursor(14, 1);
+    lcd.print(humAvg);
+
+    lcd.setCursor(0, 0);
+    lcd.print("SET TEM =");
+    lcd.setCursor(10, 0);
+    lcd.print(50);
+
+    if (heaterTemp == 50 && temAvg <= 50) {
+      digitalWrite(heater, HIGH);
+      digitalWrite(heaterFan, HIGH);
+      digitalWrite(exsourceFan, LOW);
+      delay(10);
+    } else {
+      digitalWrite(heater, LOW);
+      digitalWrite(heaterFan, LOW);
+      digitalWrite(exsourceFan, HIGH);
+      delay(10);
+    }
+
+    
+  } else if (sum <= 80 && sum >= 61) {
+    heaterTemp = 60;
+
+    lcd.clear();
+
+    lcd.setCursor(0, 1);
+    lcd.print("TEM= ");
+    lcd.setCursor(4, 1);
+    lcd.print(temAvg);
+
+    lcd.setCursor(10, 1);
+    lcd.print("HUM=");
+    lcd.setCursor(14, 1);
+    lcd.print(humAvg);
+
+    lcd.setCursor(0, 0);
+    lcd.print("SET TEM =");
+    lcd.setCursor(10, 0);
+    lcd.print(60);
+
+    if (heaterTemp == 60 && temAvg <= 60) {
+      digitalWrite(heater, HIGH);
+      digitalWrite(heaterFan, HIGH);
+      digitalWrite(exsourceFan, LOW);
+      delay(10);
+    } else {
+      digitalWrite(heater, LOW);
+      digitalWrite(heaterFan, LOW);
+      digitalWrite(exsourceFan, HIGH);
+      delay(10);
+    }
+    
+  } else if (sum <= 102 && sum >= 81) {
+    heaterTemp = 70;
+
+    lcd.clear();
+
+    lcd.setCursor(0, 1);
+    lcd.print("TEM= ");
+    lcd.setCursor(4, 1);
+    lcd.print(temAvg);
+
+    lcd.setCursor(10, 1);
+    lcd.print("HUM=");
+    lcd.setCursor(14, 1);
+    lcd.print(humAvg);
+
+    lcd.setCursor(0, 0);
+    lcd.print("SET TEM =");
+    lcd.setCursor(10, 0);
+    lcd.print(70);
+
+    if (heaterTemp == 70 && temAvg <= 70) {
+      digitalWrite(heater, HIGH);
+      digitalWrite(heaterFan, HIGH);
+      digitalWrite(exsourceFan, LOW);
+      delay(10);
+    } else {
+      digitalWrite(heater, LOW);
+      digitalWrite(heaterFan, LOW);
+      digitalWrite(exsourceFan, HIGH);
+      delay(10);
+    }
+
+    
+  }
+
+  Serial.println(heaterTemp);
+
+  
+
+}
